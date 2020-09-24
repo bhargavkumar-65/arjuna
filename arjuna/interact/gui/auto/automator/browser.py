@@ -19,6 +19,7 @@ from arjuna.tpi.constant import ArjunaOption
 
 from arjuna.core.poller.conditions import *
 from arjuna.core.poller.caller import *
+from arjuna.tpi.tracker import track
 
 class BrowserConditions:
 
@@ -33,6 +34,7 @@ class BrowserConditions:
         caller = DynamicCaller(self.__browser.is_document_ready)
         return BooleanCondition(caller)
 
+@track("info")
 class Browser:
 
     def __init__(self, automator):
@@ -54,8 +56,11 @@ class Browser:
         self.__automator.dispatcher.go_forward_in_browser()
         self.__conditions.DocumentReadyState().wait()
 
-    def refresh(self):
-        self.__automator.dispatcher.refresh_browser()
+    def refresh(self, hard=False):
+        if hard:
+            self.__automator.execute_javascript("window.location.reload(true);")
+        else:
+            self.__automator.execute_javascript("window.location.reload(false);")
         self.__conditions.DocumentReadyState().wait()
 
     def execute_javascript(self, js, *args):

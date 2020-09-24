@@ -52,6 +52,11 @@ class DriverCommands:
         return driver.page_source
 
     @classmethod
+    def send_keys(cls, driver, key_str):
+        print(key_str)
+        ActionChains(driver).send_keys(key_str).perform()
+
+    @classmethod
     def is_web_alert_present(cls, driver):
         from selenium.webdriver.support.ui import WebDriverWait
         from selenium.webdriver.support import expected_conditions as EC
@@ -157,6 +162,10 @@ class DriverCommands:
     @classmethod
     def mouse_click_on_element(cls, driver, webelement):
         chain = ActionChains(driver).click(webelement).perform()
+
+    @classmethod
+    def double_click_on_element(cls, driver, webelement):
+        chain = ActionChains(driver).double_click(webelement).perform()
 
     @classmethod
     def scroll_to_element(cls, driver, webelement):

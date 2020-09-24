@@ -5,6 +5,15 @@ Arjuna Command Line Interface
 
 Arjuna provides a very comprehensive yet intuitive Command Line Interface (CLI).
 
+Short and Long Form Switches
+----------------------------
+
+Different CLI switches might have a short form or long form or both.
+
+Short form is prefixed with a single hyphen e.g. **-h**. Typically these forms have one or two letters.
+
+Long form is prefixed with a two consecutive hyphens e.g. **--help**. (In this HTML doc it will visually look like a long single hyphen.). These forms are comprised of one or more words.
+
 -h or --help
 ------------
 You can check the available options using **-h** or **--help** switch:
@@ -27,6 +36,10 @@ Arjuna's CLI is Command-Driven. Following are the current available commands:
     - **run-session**: Run a session defined in **<Project Root Directory/config/sessions.yaml>**.
     - **run-stage**: Run a session defined in **<Project Root Directory/config/stages.yaml>**.
     - **run-group**: Run a session defined in **<Project Root Directory/config/groups.yaml>**.
+
+.. note::
+
+    For using **run-session**, **run-stage** or **run-group**, the config directory must contain **sessions.yaml**, **stages.yaml** and **groups.yaml** files (even if empty).
 
 You can see the help for a given command by running **python -m arjuna <command> -h**, for example
 

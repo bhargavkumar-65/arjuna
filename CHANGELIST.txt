@@ -5,7 +5,6 @@ Future Themes (In-Progress or Planned):
     - Call Walkthroughs and Identify New Named Exceptions to be created.
     - Auto screenshot name should consider session, stage and group name.
     - Configuration:
-        - Overrridablity (and level.)
         - Provision for vars section in config files 
         - Stage factory
         - Group Factory
@@ -41,17 +40,85 @@ Future Themes (In-Progress or Planned):
         - -ip/im/-it switches should not accept blank string.
         - ArjunaOption.REPORT_SORT_BY_NAME based on pytest-html option if available Or else auto execte an injected JavaScript to do this.
         - See if a sortable reporting time column and group column can be introduced as well.
+        - --no-print-logs is removed in latest pytest. Needs to be removed from Arjuna as well (--show-capture is the option.)
+        - Check groups.yaml rules logic.
+    - Discussion with Pierre
+        - Add container assertions to Asserter.
+        - as_json() to data reference. 
 
-1.1.0 Goals
------------
-To Do
-    --> Example code for Http Layer automation.
-    --> Production quality Http Layer automation.
+1.1.12
+------
+
+1.1.11
+------
+- --rename-report option added to run-group CLI. Reports are generated without session and stage prefix for this option.
+
+1.1.10
+------
+- Support for double click in GuiElement.
+
+1.1.9
+-----
+- HTML report name changed.
+- Added more project meta data to HTML report as well as Arjuna & pytest command line, reference configuration name.
+- DEPS_DIR can be a path relative to the root of an Arjuna Test Project.
+
+1.1.8
+-----
+- run-group option works even if sessions.yaml and stages.yaml are empty.
+
+1.1.7
+-----
+- Fix in token logic for Client Grant in HTTP.
+
+1.1.6
+-----
+- Added support for Dependency directory (ArjunaOption.DEPS_DIR). Defaults to <project>/dependency. Can be overriden in reference conf.
+
+1.1.5
+-----
+- Fixed sesssion level header addition in Http Session.
+- Support for Python list as content in Http methods.
+
+1.1.2
+-----
+- Added support for hard refresh.
+
+1.1.1
+-----
+- The pytest command on Windows has been changed w.r.t. capturing of console output/logs as it causes errors.
+
+1.1.0
+-----
+Docs
+    - Updated format of various docs
+    - Included third party library info in index.rst
+    - Updated license and notice files.
+
+1.0.19
+------
+Docs
+    - Data reference TPI docs.
+    - Added Test Reporting section.
+    - Docs for Screenshooter and Network recorder protocols.
+    - Stage level list of overridable configuration options.
+    - Logging and Tracking
+- Multiprocessing for parallelism reverted to multithreading. Needs to be explored in future versions.
+- register_configs hook name changed to register_ref_confs for clarity.
+
+1.0.18
+------
+Docs
+    - Updated HTTP Auto docs to include Http Facade class.
+HTTP Auto
+    - Http.content.json implements custom JSON encoder to handle nested structures containing Yaml or Json custom objects.
+Fixes
+    - Fixed oauth_implicit_grant_session in http.py.
 
 1.0.17
 ------
 Http Automation
-    - Http Facade class added.
+    - Http Facade class added. Sessions are created using this class. Also supports quick sender methods with temp session creation.
     - Support for basic and digest authentication.
     - The session module is split into multiple modules for better maintenance as the code became large for single file.
     - Added support for HEAD, PATCH, OPTIONS methods.
@@ -71,6 +138,10 @@ Http Automation
 Configuration
     - Added ArjunaOption.DATA_FILE_DIR to contain files that are supposed to be used as file data.
     - create-project command creates project/data/file directory with a placeholder.
+Data References
+    - Moved IndexedDataReference and ContextualDataReference classes to TPI.
+NodeLocator
+    - Now available as Xml.node_locator
 
 1.0.16
 ------

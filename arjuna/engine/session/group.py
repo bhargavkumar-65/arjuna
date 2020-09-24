@@ -16,6 +16,7 @@
 # limitations under the License.
 
 import os
+import platform
 
 import pytest
 
@@ -84,7 +85,7 @@ class TestGroup:
         os.chdir(self.__project_dir)
         print("Executing pytest with args: {}".format(" ".join(self.__pytest_args)))
 
-
+        Arjuna.register_pytest_command_for_group(" ".join(self.__pytest_args))
         pytest_retcode = pytest.main(self.__pytest_args)
         return pytest_retcode
 
@@ -97,7 +98,14 @@ class TestGroup:
         self.__tests_dir = self.config.value(ArjunaOption.TESTS_DIR)
         suffix = ""
         if self.__name != "mgroup":
-            suffix = "-" + self.__session.name + "-" + self.__stage.name + "-" + self.__name
+            rename = False
+            if self.__session.name == "msession" and self.__stage.name == "mstage":
+                if self.config.value(ArjunaOption.REPORT_GROUP_RENAME):
+                    rename = True
+            else:
+                rename = False
+            if not rename:
+                suffix = "-" + self.__session.name + "-" + self.__stage.name + "-" + self.__name
         self.__xml_path = os.path.join(self.config.value(ArjunaOption.REPORT_XML_DIR), "report{}.xml".format(suffix))
         self.__html_path = os.path.join(self.config.value(ArjunaOption.REPORT_HTML_DIR), "report{}.html".format(suffix))
         self.__report_formats = self.config.value(ArjunaOption.REPORT_FORMATS)
@@ -106,7 +114,11 @@ class TestGroup:
         pytest_ini_path = res_path + "/pytest.ini"
 
         # -s is to print to console.
-        self.__pytest_args = ["-c", pytest_ini_path, "--rootdir", self.__project_dir, "--no-print-logs", "--show-capture", "all", "--disable-warnings", "-rxX", "--css", self.__css_path] # 
+        self.__pytest_args = ["-c", pytest_ini_path, "--rootdir", self.__project_dir, "--disable-warnings", "-rxX", "--css", self.__css_path]
+        if platform.system().casefold() == "Windows".casefold() :
+            self.__pytest_args.extend(["--capture", "no"])
+        else:
+            self.__pytest_args.extend(["--no-print-logs", "--show-capture", "all"])
         self.__test_args = []
         self.__load_tests(rules=self.__rules)
         self.__load_meta_args()

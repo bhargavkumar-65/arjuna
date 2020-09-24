@@ -24,6 +24,7 @@ from requests.auth import *
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 from .session import HttpSession
 from .response import HttpResponse
+from .oauth import OAuthImplicitGrantSession, OAuthClientGrantSession
 
 from collections import namedtuple
 from arjuna.tpi.data.entity import data_entity
@@ -289,44 +290,79 @@ class Http:
 
         @classmethod
         def blank(cls, content=""):
+            '''
+            Send empty content. Content-Type is sent as “text/html”
+            '''
             return _HttpContent(content="", type=cls.get_content_type(cls.blank))
 
         @classmethod
         def html(cls, content=""):
+            '''
+            Send HTML content. Content-Type is sent as “text/html”
+            '''
             return _HttpContent(content=content, type=cls.get_content_type(cls.html))
 
         text = html
 
         @classmethod
         def bytes(cls, content=""):
+            '''
+            Send bytes string. Content-Type is sent as “text/html”
+            '''
             if content:
                 content = io.BytesIO(content)
             return _HttpContent(content=content, type=cls.get_content_type(cls.bytes))
 
         @classmethod
         def utf8(cls, content=""):
+            '''
+            Send UTF-8 string. Content-Type is sent as “text/html”
+            '''
             if content:
                 content = content.encode("utf-8")
             return _HttpContent(content=content, type=cls.get_content_type(cls.utf8))
 
         @classmethod
         def urlencoded(cls, content=""):
+            '''
+            Send a dictionary of key-values in URL encoded format. Content-Type is sent as “application/x-www-form-urlencoded”
+            '''
             if content:
                 content = urlencode(content)
             return _HttpContent(content=content, type=cls.get_content_type(cls.urlencoded))
 
         @classmethod
         def json(cls, content=""):
+            '''
+            Send a dictionary of key-values as JSON. Content-Type is sent as “application/json”
+            '''
+            from json import JSONEncoder
+            from arjuna.tpi.parser.yaml import YamlDict, YamlList
+            from arjuna.tpi.parser.json import JsonDict, JsonList
+            class _CustomEncoder(JSONEncoder):
+                def default(self, o):
+                    if isinstance(o, YamlDict) or isinstance(o, YamlList) or isinstance(o, JsonList) or isinstance(o, JsonDict):
+                        return o.raw_object
+                    return JSONEncoder.default(self, o)
+
             if content:
-                content = json.dumps(content, indent=2)
+                if isinstance(content, JsonList) or isinstance(content, JsonDict):
+                    content = content.raw_object
+                content = json.dumps(content, cls=_CustomEncoder, indent=2)
             return _HttpContent(content=content, type=cls.get_content_type(cls.json))
 
         @classmethod
         def xml(cls, content=""):
+            '''
+            Send an XML string as XML. Content-Type is sent as “application/xml
+            '''
             return _HttpContent(content=content, type=cls.get_content_type(cls.xml))
 
         @classmethod
         def file(cls, field_name, file_name, *, content_type='text/plain', headers=None):
+            '''
+            Upload a file and send as multipart data. Content-Type is sent as the content type got from multipart encoding.
+            '''
             from arjuna import C, ArjunaOption
             file_path = os.path.join(C(ArjunaOption.DATA_FILE_DIR), file_name)
             encoder = MultipartEncoder(
@@ -336,6 +372,9 @@ class Http:
 
         @classmethod
         def multipart(cls, *fields):
+            '''
+            Send the provided HTTP fields as multipart data. Content-Type is sent as the content type got from multipart encoding.
+            '''
             from arjuna import C, ArjunaOption
             elist = list()
             for field in fields:
@@ -353,8 +392,56 @@ class Http:
 
         @classmethod
         def custom(self, content, *, type):
+            '''
+            Send content with a custom content type.
+            '''
             return _HttpContent(content=content, type=type)
 
     @classmethod
     def field(cls, name, value, is_file=False, content_type="text/plain", headers=None):
         return _HttpField(name=name, value=value, is_file=is_file, content_type=content_type, headers=headers)
+
+    @classmethod
+    def oauth_client_grant_session(cls, *, url, client_id, client_secret, token_url):
+        '''
+            Create OAuthClientGrantSession object.
+
+            Creates token using OAuth's Resource Owner Client Credentials Grant Type.
+            Uses BackendApplicationClient from requests_oauthlib.
+
+            Keyword Arguments:
+                url: Base URL for this HTTP session. If relative path is used as a route in sender methods like `.get`, then this URL is prefixed to their provided routes.
+                client_id: Client ID
+                client_secret: Client Secret
+                token_url: Token URL
+        '''
+        return OAuthClientGrantSession(url=url, client_id=client_id, client_secret=client_secret, token_url=token_url)
+
+
+    @classmethod
+    def oauth_implicit_grant_session(cls, *, url, client_id, scope, redirect_uri=None, auth_url, auth_handler=None, **auth_args):
+        '''
+            Create OAuthImplicitGrantSession object.
+
+            Creates token using OAuth's Implicit Code Grant Type.
+            Uses MobileApplicationClient from requests_oauthlib.
+
+            Keyword Arguments:
+                url: Base URL for this HTTP session. If relative path is used as a route in sender methods like `.get`, then this URL is prefixed to their provided routes.
+                client_id: Client ID
+                scope: Scope
+                redirect_uri: Redirect URI
+                auth_url: Authorization URL
+                auth_handler: A callback function to handle custom authroization logic. It will be called by providing session object, authorization URL and auth_args.
+                **auth_args: Arbitray key-value pairs to be passed as arguments to the auth_handler callback.
+
+            Note:
+                Some sample auth_handler signatures:
+
+                    .. code-block:: python
+
+                        auth_handler_1(oauth_session, auth_url, **kwargs)
+                        auth_handler_2(oauth_session, auth_url, some_arg=None, another_arg="some_def_value")
+
+        '''
+        return OAuthImplicitGrantSession(url=url, client_id=client_id, scope=scope, redirect_uri=redirect_uri, auth_url=auth_url, auth_handler=auth_handler, **auth_args)

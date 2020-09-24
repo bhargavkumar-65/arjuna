@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root **toctree** directive.
 
-*****************
-Welcome to Arjuna
-*****************
+****************************************************************
+Welcome to Arjuna - The Framework for Professional Coded Testing
+****************************************************************
 
 .. image:: _static/Arjuna.png
     :align: center
@@ -115,6 +115,24 @@ Localization
 
    l10n
 
+Logging
+=======
+
+.. toctree::
+   :maxdepth: 6
+
+   logging
+
+
+Test Reporting
+==============
+
+.. toctree::
+   :maxdepth: 6
+
+   reporting
+
+
 Web GUI Automation
 ==================
 
@@ -210,6 +228,10 @@ Data Generation and Data Entities
 * :py:class:`composer <arjuna.tpi.data.generator.composer>`
 * :py:class:`data_entity <arjuna.tpi.data.entity.data_entity>`
 
+Data References
+===============
+* :py:class:`IndexedDataReference <arjuna.tpi.data.reference.IndexedDataReference>`
+* :py:class:`ContextualDataReference <arjuna.tpi.data.reference.ContextualDataReference>`
 
 Web GUI Automation
 ==================
@@ -252,7 +274,7 @@ Reporting Protocols
 ===================
 
 * :py:class:`ScreenShooter <arjuna.tpi.protocol.screen_shooter.ScreenShooter>`
-* :py:class:`NetworkRecorder <arjuna.tpi.httpauto.network_recorder.NetworkRecorder>`
+* :py:class:`NetworkRecorder <arjuna.tpi.protocol.network_recorder.NetworkRecorder>`
 
 Objects In Arjuna Hooks
 =======================
@@ -376,4 +398,38 @@ Licensed under the Apache License, Version 2.0 (the “License”); you may not 
     http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+*********************
+Third Party Libraries
+*********************
+
+Arjuna makes use of the following third party libraries:
+
+    * lxml
+    * requests
+    * requests-toolbelt
+    * selenium
+    * webdriver_manager
+    * xlrd
+    * xlwt
+    * pyparsing
+    * pyhocon
+    * pytest
+    * pytest-html
+    * pytest-dependency
+    * PyYAML
+    * mimesis
+    * jsonpath-rw
+    * jsonpath-rw-ext
+    * genson
+    * jsonschema
+    * Pallets-Sphinx-Themes
+    * oauthlib
+    * requests_oauthlib
+    * bs4
+    * browsermob-proxy
+    * haralyzer
+
+
+
 
